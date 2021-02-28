@@ -1,3 +1,6 @@
+const { JSDOM } = require("jsdom");
+const { window } = new JSDOM("");
+const $ = require("jquery")(window);
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
@@ -13,73 +16,30 @@ app.listen(3021, () => {
 });
 
 app.get('/', (req, res) => {
-    //res.end('Hi there!');
-    //res.sendFile(path.resolve(__dirname, 'index.html'));
-    res.end(`
-    <!DOCTYPE html>
-        <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>test33</title>
-            </head>
-
-            <body>
-                <h1>HALLOOOOOO</h1>
-            </body>
-        </html>
-    `)
+    res.sendFile(path.resolve(__dirname, 'static/index.html'))
 })
 
 app.post('/', (req, res) => {
-    //console.log(typeof req);
-    //console.log(typeof req.body)
     let reqJSON = req.body;
-    printJSON(reqJSON)
-        //console.log('keys: ' + Object.keys(reqOBJ));
-        //console.log('values: ' + Object.entries(reqOBJ));
-
-    // for (let [k, e] of Object.entries(reqOBJ)) {
-    //     //console.log(e);
-    //     //console.log('typeof: ' + typeof e + ', lengte: ' + e.length);
-    //     //console.log("undefined" + e.value);
-
-    //     if (typeof e === 'object') {
-    //         console.log(k + ': ');
-    //         for (let [ke, en] in Object.entries(e)) {
-    //             console.log(e[ke]);
-    //         }
-    //     } else {
-    //         console.log(k + ': ' + e)
-    //     }
-
-
-    // }
+    printJSON(reqJSON);
     reqJSON = JSON.stringify(req.body);
-
+    console.log('------------------------------------');
     console.log(`Je stuurde dit naar de server: ${reqJSON}`);
-
     res.end(`gelukt!!`);
-    //printJSON(reqObj);
 })
 
 function printJSON(reqOBJ) {
-    for (let [k, e] of Object.entries(reqOBJ)) {
-        //console.log(e);
-        //console.log('typeof: ' + typeof e + ', lengte: ' + e.length);
-        //console.log("undefined" + e.value);
-
-        if (typeof e === 'object') {
-            console.log(k + ': ');
-            for (let [ke, en] in Object.entries(e)) {
-                console.log(e[ke]);
+    console.log('------------------------------------');
+    for (let [key, entry] of Object.entries(reqOBJ)) {
+        if (typeof entry === 'object') {
+            console.log(key + ': ');
+            for (let [ke, en] in Object.entries(entry)) {
+                for (let i = 0; i < Object.keys(entry[ke]).length; i++) {
+                    console.log(Object.keys(entry[ke])[i] + ': ' + Object.values(entry[ke])[i]);
+                }
             }
         } else {
-            console.log(k + ': ' + e)
+            console.log(key + ': ' + entry);
         }
-
-
     }
-
 }
